@@ -1,29 +1,6 @@
-import { ActionNameResult } from '@dynatrace/dtrum-api-types';
+import Link from "next/link";
 
 export default function Home() {
-
-  function triggerError() {
-    // Simulate an error
-    throw new Error("This is a simulated error for RUM testing.");
-  }
-
-  function handleCustomAction() {
-    // Simulate a custom action
-    if (window.dtrum) {
-        const result = window.dtrum.actionName("Custom Action");
-        switch(result) {
-          case ActionNameResult.SUCCESS:
-          // handle success...
-          break;
-          case ActionNameResult.ACTION_NOT_FOUND:
-          // handle action not found...
-          break;
-          //etc...
-        }
-    } else {
-        // handle missing dtrum api
-        console.warn("Dynatrace RUM API is not available.");
-    }
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -32,18 +9,20 @@ export default function Home() {
         <p className="mt-3 text-2xl">A playground for Real User Monitoring</p>
         <div className="mt-6 flex w-full max-w-3xl items-center justify-between">
           <h2 className="text-2xl font-semibold">Most Common RUM Elements Captured</h2>
+          <ul>
+            <li><Link href="/rum-api" className="hover:bg-gray-800 p-2 rounded transition">API Example and Usage</Link></li>
+            <li><Link href="/rum-events" className="hover:bg-gray-800 p-2 rounded transition">RUM Events</Link></li>
+          </ul>
           <div className="flex items-center space-x-4">
             <h3>Actions</h3>
             <div>Loading Action (refresh the page)</div>
             <div>Click Action (Automatic Action)</div>
             <button>Automatic Action</button>
-            <div>Custom Action</div>
-            <button>Custom Action</button>
             <h3>Information Collecting</h3>
             <div>User Tagging</div>
             <form action="collectUserTags" method="get"></form>
             <div>Error</div>
-            <button onClick={triggerError}>Error</button>
+            <button>Error</button>
           </div>
         </div>
       </main>
