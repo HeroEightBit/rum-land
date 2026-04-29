@@ -1,29 +1,40 @@
-# Build stage
-FROM node:20-alpine AS builder
-
+# Stage 1: Install dependencies
+FROM node:20-alpine AS deps
 WORKDIR /app
-
-# Install dependencies before copying application code to leverage Docker cache
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
-# Copy the rest of the app and build
-COPY . ./
+# Stage 2: Build the app
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+# Disable telemetry during build
+ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
-# Runtime stage
+# Stage 3: Production runner
 FROM node:20-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV=production
 
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Create a non-root user for security
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy necessary files from builder
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/app ./app
-COPY --from=builder /app/next.config.ts ./
-COPY --from=builder /app/tsconfig.json ./
-COPY --from=builder /app/next-env.d.ts ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+USER nextjs
 
 EXPOSE 4444
+
+ENV PORT 4444
+ENV HOSTNAME "0.0.0.0"
+
 CMD ["npm", "start"]

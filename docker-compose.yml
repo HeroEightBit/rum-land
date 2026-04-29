@@ -1,11 +1,10 @@
 services:
-  web:
+  nextjs-site:
     build:
       context: .
       dockerfile: Dockerfile
-    image: rum-land:latest
+    restart: always
     ports:
       - '4444:4444'
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
