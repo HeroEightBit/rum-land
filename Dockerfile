@@ -25,5 +25,5 @@ COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/next-env.d.ts ./
 
-EXPOSE 3000
+EXPOSE 4444
 CMD ["npm", "start"]
