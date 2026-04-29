@@ -8,7 +8,7 @@ const RumEvents = () => {
         if (dynatrace?.sendBizEvent) {
             dynatrace.sendBizEvent("type", {
                 prop: "value",
-                name: "biz event name",
+                name: "Example Biz Event",
                 timestamp: Date.now(),
                 url: "rumland.heroeightbit.com",
                 "page_id": "117",
@@ -16,12 +16,12 @@ const RumEvents = () => {
             });
         }
 
-        // Simulate sending a business event
-        console.log("Business event sent: User clicked the 'Buy Now' button.");
+        //Sending a business event
+        console.log("Business event sent");
     }
 
     return (
-        <div>
+        <div>   
             <h1>Rum Events</h1>
             <div>
                 <h3>Biz Events</h3>
